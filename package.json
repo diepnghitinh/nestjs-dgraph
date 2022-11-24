@@ -1,0 +1,47 @@
+{
+  "name": "nestjs-dgraph",
+  "version": "0.1.0",
+  "description": "dgraph-js wrapper for nestjs",
+  "author": "nguyen2242x@gmail.com",
+  "license": "MIT",
+  "repository": "diepnghitinh/nestjs-dgraph",
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "precommit": "lint-staged",
+    "prepublish:npm": "npm run build",
+    "publish:npm": "npm publish --access public"
+  },
+  "keywords": [
+    "nestjs",
+    "dgraph"
+  ],
+  "devDependencies": {
+    "@nestjs/common": "9.1.6",
+    "@nestjs/core": "9.1.6",
+    "@types/google-protobuf": "3.15.6",
+    "@types/node": "18.11.9",
+    "dgraph-js": "^21.3.1",
+    "@grpc/grpc-js": "^1.7.3",
+    "husky": "8.0.2",
+    "lint-staged": "13.0.3",
+    "prettier": "2.7.1",
+    "reflect-metadata": "0.1.13",
+    "rxjs": "7.5.7",
+    "typescript": "4.8.4"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "@nestjs/common": "9.1.6",
+    "@nestjs/core": "9.1.6",
+    "dgraph-js": "^21.3.1",
+    "@grpc/grpc-js": "^1.7.3",
+    "reflect-metadata": "0.1.13",
+    "rxjs": "7.5.7"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "prettier --write",
+      "git add"
+    ]
+  }
+}
