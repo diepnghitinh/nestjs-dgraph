@@ -5,7 +5,7 @@
 ## Installation
 
 ```bash
-npm i --save nestjs-dgraph-database dgraph-js @grpc/grpc-js
+npm i --save nestjs-dgraph dgraph-js @grpc/grpc-js
 ```
 
 ## Quick Start
