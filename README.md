@@ -61,7 +61,7 @@ export class SomeService {
     return req;
   }
 
-  runMutation() {
+  createMutation() {
     await this.dgraph
       .call()
       .newTxn()
@@ -72,6 +72,32 @@ export class SomeService {
             type: 'building',
           },
         ],
+      });
+  }
+
+  updateMutation() {
+    await this.dgraph
+      .call()
+      .newTxn()
+      .mutate({
+        set: [
+          {
+            uid: '0x2734',
+            name: 'Landlord blue',
+            type: 'building',
+          },
+        ],
+      });
+  }
+
+  runMutationDelete() {
+    await this.dgraph
+      .call()
+      .newTxn()
+      .mutateDelete({
+        uid: '0x2734',
+        name: null,
+        type: null,
       });
   }
 

@@ -85,6 +85,10 @@ export class DgraphGrpc implements IDgraphFactory {
         throw new Error('Method not implemented.');
     }
 
+    mutateDelete(data: any) {
+        throw new Error('Method not implemented.');
+    }
+
     healhcheck() {
     }
 
@@ -155,6 +159,10 @@ export class DgraphHttp implements IDgraphFactory {
 
     async mutate(data: any) {
         await this._txn.mutate({setJson: data, commitNow: true});
+    }
+
+    async mutateDelete(data: any) {
+        await this._txn.mutate({deleteJson: data, commitNow: true});
     }
 
     healhcheck() {

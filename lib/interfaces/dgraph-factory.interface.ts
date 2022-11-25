@@ -10,6 +10,7 @@ export interface IDgraphFactory {
   query(q: string): any;
   queryWithVars(q: string, vars?: any): any;
   mutate(data: any): any;
+  mutateDelete(data: any): any;
   close(): void;
 }
 
