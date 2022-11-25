@@ -3,6 +3,7 @@ import * as dgraph_js_http from 'dgraph-js-http';
 import { IDgraphFactory, DgraphClientStub } from '../interfaces/dgraph-factory.interface';
 import { DgraphModuleOptions } from '../interfaces/dgraph-options.interface';
 import axios from 'axios';
+import * as grpc from '@grpc/grpc-js';
 
 export class DgraphFactory {
 
@@ -42,10 +43,22 @@ export class DgraphFactory {
 
 export class DgraphGrpc implements IDgraphFactory {
 
+    static stubs: dgraph_js_grpc.DgraphClientStub[] = [];
+
+    private stub: any;
+
+    private options: DgraphModuleOptions;
+
     private _client: dgraph_js_grpc.DgraphClient;
     private _txn: dgraph_js_grpc.Txn;
 
-    constructor(stub: any, options: DgraphModuleOptions) {}
+    private meta = new grpc.Metadata();
+
+    constructor(_stub: any, _options: DgraphModuleOptions) {
+        this.stub = _stub;
+        DgraphGrpc.stubs.push(_stub);
+        this.options = _options;
+    }
 
     get client(): dgraph_js_grpc.DgraphClient {
         return this._client;
@@ -56,16 +69,35 @@ export class DgraphGrpc implements IDgraphFactory {
     }
 
     DgraphClientStub(): any {
-        throw new Error('Method not implemented.');
+        this.healhcheck();
+        this.stub = new dgraph_js_grpc.DgraphClientStub(
+            this.stub.address,
+            this.stub.credentials,
+        );
+        console.log(this.stub);
+        return this;
     }
 
     DgraphClient(): IDgraphFactory {
-        // for (var key in this.options.headers) {
-        //     if ( this.options.headers?.hasOwnProperty(key)) {
-        //     this._client.set(key,  this.options.headers[key]);
-        //     }
-        // }
-        throw new Error('Method not implemented.');
+        this._client = new dgraph_js_grpc.DgraphClient(this.stub);
+        if (this.options.auth_token) {
+            this.meta.add('auth-token', this.options.auth_token);
+        }
+
+        if (this.options.api_key) { 
+            this.meta.add('Authorization', this.options.api_key);
+        }
+
+        for (var key in this.options.headers) {
+            if ( this.options.headers?.hasOwnProperty(key)) {
+                this.meta.set(key,  this.options.headers[key]);
+            }
+        }
+
+        if (this.options.debug) {
+            this._client.setDebugMode(true);
+        }
+        return this;
     }
 
     newTxn(options?: any): IDgraphFactory {
@@ -73,20 +105,34 @@ export class DgraphGrpc implements IDgraphFactory {
         return this;
     }
 
-    async query() {
-        throw new Error('Method not implemented.');
+    async query(q: string) {
+        return this._txn.query(q, this.meta);
     }
 
-    queryWithVars() {
-        throw new Error('Method not implemented.');
+    async queryWithVars(q: string, vars?: any) {
+        return this._txn.queryWithVars(q, this.meta, vars);
     }
 
-    mutate(data: any) {
-        throw new Error('Method not implemented.');
+    async mutate(data: any) {
+        const mu = new dgraph_js_grpc.Mutation();
+        mu.setSetJson(data);
+
+        const req = new dgraph_js_grpc.Request();
+        req.setCommitNow(true);
+        req.setMutationsList([mu]);
+
+        await this._txn.doRequest(req);
     }
 
-    mutateDelete(data: any) {
-        throw new Error('Method not implemented.');
+    async mutateDelete(data: any) {
+        const mu = new dgraph_js_grpc.Mutation();
+        mu.setDeleteJson(data);
+
+        const req = new dgraph_js_grpc.Request();
+        req.setCommitNow(true);
+        req.setMutationsList([mu]);
+
+        await this._txn.doRequest(req);
     }
 
     healhcheck() {
@@ -124,7 +170,6 @@ export class DgraphHttp implements IDgraphFactory {
     }
 
     DgraphClientStub(): any {
-        console.log('DgraphClientStub HTTP');
         this.healhcheck();
         this.stub = new dgraph_js_http.DgraphClientStub(
             this.stub.address

@@ -1,6 +1,6 @@
 ## Description
 
-Nestjs Plugin for [Dgraph community > 20.0], Support HttpClient, and Todo: Grpc
+Nestjs Plugin for [Dgraph community > 20.0], Support HttpClient, Grpc
 
 ## Installation
 
