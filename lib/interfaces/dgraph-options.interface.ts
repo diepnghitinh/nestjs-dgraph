@@ -8,4 +8,7 @@ export interface DgraphModuleOptions {
     options?: object | null;
   }[];
   debug?: boolean;
+  api_key?: string | null;
+  auth_token?: string | null;
+  headers?: object;
 }

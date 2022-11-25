@@ -1,11 +1,11 @@
 ## Description
 
-[dgraph-js](https://github.com/dgraph-io/dgraph-js) module for [Nest](https://github.com/nestjs/nest).
+Nestjs Plugin for [Dgraph community > 20.0], Support HttpClient, and Todo: Grpc
 
 ## Installation
 
 ```bash
-npm i --save nestjs-dgraph dgraph-js @grpc/grpc-js
+npm i --save nestjs-dgraph @grpc/grpc-js
 ```
 
 ## Quick Start
@@ -15,7 +15,7 @@ Import `DgraphModule` to your ApplicationModule
 ```typescript
 
 import { Module } from '@nestjs/common';
-import { DgraphModule } from 'nestjs-dgraph-database';
+import { DgraphModule } from 'nestjs-dgraph';
 import * as grpc from '@grpc/grpc-js';
 
 @Module({
@@ -23,10 +23,16 @@ import * as grpc from '@grpc/grpc-js';
     DgraphModule.forRoot({
       stubs: [
         {
+          // HTTP Client Configuration
+          address: 'http://localhost:8080'
+        },
+        {
+          // GRPC Client Configuration
           address: 'localhost:9080',
-          credentials: grpc.credentials.createInsecure()
+          credentials: grpc.credentials.createInsecure(),
         }
       ],
+      auth_token: 'a94a8fe5ccb19ba61c4c0873d391e987982fbbd3',
       debug: true
     })
   ],
@@ -43,17 +49,30 @@ Inject `DgraphService` to your services and access the DgraphClient
 export class SomeService {
   constructor(dgraph: DgraphService) {}
 
-  alterSchema() {
-    const schema = "name: string @index(exact) .";
-    const op = new dgraph.Operation();
-    op.setSchema(schema);
-    await this.dgraph.client.alter(op);
+  findAll() {
+   const query = `{
+      people(func: has(name)) {
+        name
+        type
+      }
+    }`;
+
+    const req = await this.dgraph.call().newTxn().query(query);
+    return req;
   }
 
-  dropAll() {
-    const op = new dgraph.Operation();
-    op.setDropAll(true);
-    await this.dgraph.client.alter(op);
+  runMutation() {
+    await this.dgraph
+      .call()
+      .newTxn()
+      .mutate({
+        set: [
+          {
+            name: 'Landlord',
+            type: 'building',
+          },
+        ],
+      });
   }
 
 }

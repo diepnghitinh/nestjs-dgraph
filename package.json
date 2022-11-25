@@ -1,27 +1,31 @@
 {
   "name": "nestjs-dgraph",
-  "version": "0.1.0",
-  "description": "dgraph-js wrapper for nestjs",
+  "version": "0.1.5",
+  "description": "dgraph-js , graph database for NestJs",
   "author": "nguyen2242x@gmail.com",
   "license": "MIT",
   "repository": "diepnghitinh/nestjs-dgraph",
+  "main": "dist/index",
   "scripts": {
     "build": "rm -rf dist && tsc -p tsconfig.build.json",
     "precommit": "lint-staged",
+    "prepublish:next": "npm run build",
     "prepublish:npm": "npm run build",
-    "publish:npm": "npm publish --access public"
+    "publish:npm": "npm publish --access public",
+    "publish:next": "npm publish --access public --tag next",
+    "prerelease": "npm run build"
   },
   "keywords": [
     "nestjs",
     "dgraph"
   ],
   "devDependencies": {
+    "@grpc/grpc-js": "^1.7.3",
     "@nestjs/common": "9.1.6",
     "@nestjs/core": "9.1.6",
     "@types/google-protobuf": "3.15.6",
     "@types/node": "18.11.9",
     "dgraph-js": "^21.3.1",
-    "@grpc/grpc-js": "^1.7.3",
     "husky": "8.0.2",
     "lint-staged": "13.0.3",
     "prettier": "2.7.1",
@@ -29,12 +33,15 @@
     "rxjs": "7.5.7",
     "typescript": "4.8.4"
   },
-  "dependencies": {},
+  "dependencies": {
+    "axios": "^1.2.0",
+    "dgraph-js-http": "^21.3.1"
+  },
   "peerDependencies": {
+    "@grpc/grpc-js": "^1.7.3",
     "@nestjs/common": "9.1.6",
     "@nestjs/core": "9.1.6",
     "dgraph-js": "^21.3.1",
-    "@grpc/grpc-js": "^1.7.3",
     "reflect-metadata": "0.1.13",
     "rxjs": "7.5.7"
   },
