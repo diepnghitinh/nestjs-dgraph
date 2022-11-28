@@ -9,7 +9,10 @@ export interface IDgraphFactory {
   newTxn(options?: any): IDgraphFactory;
   query(q: string): any;
   queryWithVars(q: string, vars?: any): any;
+
   mutate(data: any): any;
+  mutateQueryUpdate(q: any, mutates: any[]): any;
+  mutateQueryDelete(q: any, mutates: any[]): any;
   mutateDelete(data: any): any;
   close(): void;
 }

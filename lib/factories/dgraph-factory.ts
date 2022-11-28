@@ -113,6 +113,30 @@ export class DgraphGrpc implements IDgraphFactory {
         return this._txn.queryWithVars(q, this.meta, vars);
     }
 
+    async mutateQueryUpdate(q: any, mutates: any[]) {
+        const req = new dgraph_js_grpc.Request();
+        req.setQuery(q);
+        req.setMutationsList(mutates.map(item => {
+            const mu = new dgraph_js_grpc.Mutation();
+            mu.setSetJson(item);
+            return mu;
+        }));
+        req.setCommitNow(true);
+        await this._txn.doRequest(req);
+    }
+
+    async mutateQueryDelete(q: any, mutates: any[]) {
+        const req = new dgraph_js_grpc.Request();
+        req.setQuery(q);
+        req.setMutationsList(mutates.map(item => {
+            const mu = new dgraph_js_grpc.Mutation();
+            mu.setDeleteJson(item);
+            return mu;
+        }));
+        req.setCommitNow(true);
+        await this._txn.doRequest(req);
+    }
+
     async mutate(data: any) {
         const mu = new dgraph_js_grpc.Mutation();
         mu.setSetJson(data);
@@ -200,6 +224,24 @@ export class DgraphHttp implements IDgraphFactory {
 
     async queryWithVars(q: string, vars?: any) {
         return this._txn.queryWithVars(q, vars);
+    }
+
+    async mutateQueryUpdate(q: any, mutates: any[]) {
+        return this._txn.mutate({
+            mutation: JSON.stringify({
+                query: q,
+                set: mutates,
+             }), commitNow: true
+        });
+    }
+
+    async mutateQueryDelete(q: any, mutates: any[]) {
+        return this._txn.mutate({
+            mutation: JSON.stringify({
+                query: q,
+                delete: mutates,
+            }), commitNow: true
+        });
     }
 
     async mutate(data: any) {
