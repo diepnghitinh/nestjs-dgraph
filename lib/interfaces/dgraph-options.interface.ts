@@ -1,4 +1,5 @@
 import * as grpc from '@grpc/grpc-js';
+import { DgraphClientStub } from './dgraph-factory.interface';
 
 export interface DgraphModuleOptions {
   stubs?: {
@@ -11,4 +12,5 @@ export interface DgraphModuleOptions {
   api_key?: string | null;
   auth_token?: string | null;
   headers?: object;
+  initScript?: (client: DgraphClientStub) => void;
 }

@@ -74,7 +74,6 @@ export class DgraphGrpc implements IDgraphFactory {
             this.stub.address,
             this.stub.credentials,
         );
-        console.log(this.stub);
         return this;
     }
 
@@ -164,6 +163,12 @@ export class DgraphGrpc implements IDgraphFactory {
 
     close(): void {
         throw new Error('Method not implemented.');
+    }
+
+    async setSchema(schema: any): Promise<void> {
+        const op = new dgraph_js_grpc.Operation();
+        op.setSchema(schema);
+        await this._client.alter(op);
     }
 }
 
@@ -257,6 +262,10 @@ export class DgraphHttp implements IDgraphFactory {
 
     close(): void {
         throw new Error('Method not implemented.');
+    }
+
+    async setSchema(schema: any): Promise<void> {
+        await this._client.alter({ schema: schema });
     }
 
 }
