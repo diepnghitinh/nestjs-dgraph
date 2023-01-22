@@ -33,7 +33,10 @@ import * as grpc from '@grpc/grpc-js';
         }
       ],
       auth_token: 'a94a8fe5ccb19ba61c4c0873d391e987982fbbd3',
-      debug: true
+      debug: true,
+      initScript: async (client) => {
+        client.newTxn().setSchema('external_id: string @index(exact) .');
+      },
     })
   ],
 })

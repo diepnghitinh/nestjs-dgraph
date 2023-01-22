@@ -14,6 +14,7 @@ export interface IDgraphFactory {
   mutateQueryUpdate(q: any, mutates: any[]): any;
   mutateQueryDelete(q: any, mutates: any[]): any;
   mutateDelete(data: any): any;
+  setSchema(data: any): Promise<void>;
   close(): void;
 }
 

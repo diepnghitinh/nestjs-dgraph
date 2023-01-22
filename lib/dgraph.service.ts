@@ -39,6 +39,7 @@ export class DgraphService {
       this._client = this._dgraphFactory.DgraphClient(...this._clients)
 
     }
+    options.initScript(this.call());
     return this._client;
   }
 
